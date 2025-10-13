@@ -1,5 +1,7 @@
-import User from "../models/user.model.js";
+import User from "../models/verifyToken.js";
 import bcrypt from 'bcrypt';
+import generateJWT from "../utils/generateJWT.js"
+
 
 const signup = async (req, res) => {
   try {
@@ -19,13 +21,21 @@ const signup = async (req, res) => {
     let hashPassword = await bcrypt.hash(password, salt)
 
     const newUser = new User({ email, password: hashPassword, firstName, lastName, dateOfBirth });
+
+    const token = await generateJWT({ email: newUser.email, id: newUser._id })
+    newUser.token = token
+
     await newUser.save();
 
-    const userResponse = newUser.toObject();
-    delete userResponse.password;
-    delete userResponse.dateOfBirth;
-
-    res.status(200).json({ message: "User registered successfully", user: userResponse });
+    res.status(200).json({
+      message: "User registered successfully",
+      user: {
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+      },
+      token
+    });
   } catch (err) {
     console.error("Signup error:", err);
     res.status(500).json({ message: "Server error" });
@@ -54,16 +64,20 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
-    const userResponse = user.toObject();
-    delete userResponse.password;
+    const token = await generateJWT({ email: user.email, id: user._id })
+
 
     res.status(200).json({
-      message: "Login successful",
-      user: userResponse,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
+      token,
     });
   } catch (err) {
     console.error("Login error:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 

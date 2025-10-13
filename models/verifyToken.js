@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     dateOfBirth: { type: String, required: true },
+    token: { type: String },
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
