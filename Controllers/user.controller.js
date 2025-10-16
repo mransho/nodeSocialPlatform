@@ -1,12 +1,10 @@
-import User from "../models/verifyToken.js";
+import User from "../models/user.js";
 import bcrypt from 'bcrypt';
 import generateJWT from "../utils/generateJWT.js"
-
 
 const signup = async (req, res) => {
   try {
     let { email, password, firstName, lastName, dateOfBirth } = req.body;
-
     if (!email || !password || !firstName || !lastName || !dateOfBirth) {
       return res.status(400).json({ message: "All fields are required" });
     }

@@ -5,8 +5,12 @@ const router = express.Router();
 
 router.post("/signup", userController.signup);
 router.post("/login", userController.login);
-router.get("/", verifyToken, () => {
-    console.log("AAAAAAAAAAAAAAAA")
+
+
+
+router.get("/", verifyToken, (req, res) => {
+    console.log("AAAAAAAAAAAAAAAA");
+    res.json({ message: "Access granted ✅" });
 });
 
 export default router;
