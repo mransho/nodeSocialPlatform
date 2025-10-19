@@ -72,6 +72,7 @@ const login = async (req, res) => {
         email: user.email,
       },
       token,
+      message: "Login is successful"
     });
   } catch (err) {
     console.error("Login error:", err);
